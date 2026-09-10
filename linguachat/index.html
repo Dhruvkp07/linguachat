@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinguaChat</title>
+  <meta name="description" content="Chat across languages with automatic translation." />
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app">
+    <section id="auth-view" class="center-view">
+      <div class="auth-card">
+        <div class="brand-mark">LC</div>
+        <h1>LinguaChat</h1>
+        <p class="muted">Talk naturally. Let the app handle the language barrier.</p>
+        <button id="google-sign-in" class="primary-btn full-width">Continue with Google</button>
+        <p id="auth-error" class="error hidden"></p>
+      </div>
+    </section>
+
+    <section id="setup-view" class="center-view hidden">
+      <div class="setup-card">
+        <div class="brand-mark">LC</div>
+        <h1>Set up your profile</h1>
+        <p class="muted">Pick a unique username people can search for, and the language you want them to write to you in.</p>
+
+        <label for="username-input">Username</label>
+        <input id="username-input" type="text" maxlength="20" placeholder="e.g. dhruv_23" autocomplete="off" />
+        <p id="username-status" class="tiny muted"></p>
+
+        <label for="language-select">Preferred language</label>
+        <select id="language-select"></select>
+
+        <button id="save-profile" class="primary-btn full-width">Save and open chat</button>
+        <button id="setup-sign-out" class="text-btn">Sign out</button>
+        <p id="setup-error" class="error hidden"></p>
+      </div>
+    </section>
+
+    <section id="chat-view" class="chat-app hidden">
+      <aside class="sidebar">
+        <div class="sidebar-head">
+          <div class="brand-row">
+            <div class="brand-mark small">LC</div>
+            <div>
+              <strong>LinguaChat</strong>
+              <div id="my-language-label" class="tiny muted"></div>
+            </div>
+          </div>
+          <button id="sign-out" class="icon-btn" title="Sign out">↪</button>
+        </div>
+
+        <div class="new-chat-box">
+          <label for="friend-handle">Start a chat</label>
+          <div class="search-row">
+            <input id="friend-handle" type="text" placeholder="@username or email" autocomplete="off" />
+            <button id="start-chat" class="primary-btn compact">Chat</button>
+          </div>
+          <p id="friend-result" class="tiny muted"></p>
+        </div>
+
+        <div class="section-title">Conversations</div>
+        <div id="conversation-list" class="conversation-list"></div>
+      </aside>
+
+      <main class="main-panel">
+        <div id="empty-chat" class="empty-chat">
+          <div class="empty-icon">文</div>
+          <h2>Your multilingual inbox</h2>
+          <p class="muted">Start a conversation from the left. Messages, photos, and videos are translated into the recipient's chosen language.</p>
+        </div>
+
+        <div id="active-chat" class="active-chat hidden">
+          <header class="chat-head">
+            <div>
+              <h2 id="chat-title">Conversation</h2>
+              <div id="chat-subtitle" class="tiny muted"></div>
+            </div>
+            <button id="refresh-chat" class="icon-btn" title="Refresh">↻</button>
+          </header>
+
+          <div id="message-list" class="message-list"></div>
+
+          <div class="composer">
+            <input type="file" id="media-input" accept="image/*,video/*" class="hidden" />
+            <button id="attach-btn" type="button" class="icon-btn attach-btn" title="Send a photo or video">📎</button>
+            <textarea id="message-input" rows="1" maxlength="3000" placeholder="Write a message..."></textarea>
+            <button id="send-message" class="primary-btn send-btn">Send</button>
+          </div>
+          <div id="send-status" class="tiny muted composer-status"></div>
+        </div>
+      </main>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

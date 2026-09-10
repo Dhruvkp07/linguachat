@@ -1,0 +1,105 @@
+:root {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #17202a;
+  background: #eef2f6;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: #eef2f6; }
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+.hidden { display: none !important; }
+.muted { color: #718096; }
+.tiny { font-size: 12px; }
+.error { color: #b42318; margin-top: 12px; font-size: 13px; }
+.error-text { color: #b42318; }
+.success-text { color: #15803d; }
+
+.center-view { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+.auth-card, .setup-card {
+  width: min(430px, 100%);
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 34px;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, .08);
+}
+.auth-card h1, .setup-card h1 { margin: 16px 0 8px; font-size: 30px; letter-spacing: -.03em; }
+.auth-card p, .setup-card p { line-height: 1.55; }
+.brand-mark {
+  width: 52px; height: 52px; border-radius: 15px; display: grid; place-items: center;
+  background: #17202a; color: white; font-weight: 800; letter-spacing: -.05em;
+}
+.brand-mark.small { width: 38px; height: 38px; border-radius: 11px; font-size: 13px; }
+.full-width { width: 100%; margin-top: 22px; }
+.primary-btn {
+  border: 0; border-radius: 12px; padding: 13px 16px; background: #17202a; color: white; font-weight: 600;
+}
+.primary-btn:hover { background: #283645; }
+.primary-btn:disabled { opacity: .55; cursor: not-allowed; }
+.primary-btn.compact { padding: 10px 13px; }
+.text-btn, .icon-btn { border: 0; background: transparent; color: #52606d; }
+.text-btn { margin-top: 16px; padding: 6px; }
+.icon-btn { width: 38px; height: 38px; border-radius: 10px; }
+.icon-btn:hover { background: #edf2f7; }
+
+label { display: block; font-size: 13px; font-weight: 600; margin: 20px 0 8px; }
+select, input, textarea {
+  width: 100%; border: 1px solid #d5dde6; background: white; color: #17202a;
+  border-radius: 12px; outline: none;
+}
+select, input { padding: 12px 13px; }
+textarea { resize: none; min-height: 48px; max-height: 140px; padding: 13px 14px; line-height: 1.4; }
+select:focus, input:focus, textarea:focus { border-color: #6b7c8e; box-shadow: 0 0 0 3px rgba(107,124,142,.12); }
+
+.chat-app { min-height: 100vh; display: grid; grid-template-columns: 330px 1fr; }
+.sidebar { background: white; border-right: 1px solid #e1e7ee; display: flex; flex-direction: column; min-height: 100vh; }
+.sidebar-head { padding: 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #edf1f5; }
+.brand-row { display: flex; align-items: center; gap: 10px; }
+.brand-row strong { display: block; font-size: 14px; }
+.new-chat-box { padding: 16px; border-bottom: 1px solid #edf1f5; }
+.new-chat-box label { margin: 0 0 8px; }
+.search-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.section-title { padding: 16px 16px 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #8794a3; }
+.conversation-list { overflow: auto; padding-bottom: 16px; }
+.conversation-item { width: 100%; text-align: left; border: 0; background: transparent; padding: 13px 16px; display: flex; gap: 11px; align-items: center; }
+.conversation-item:hover, .conversation-item.active { background: #f3f6f9; }
+.avatar { width: 42px; height: 42px; flex: 0 0 42px; border-radius: 50%; display: grid; place-items: center; background: #dce4ec; color: #2f3e4d; font-weight: 700; }
+.conversation-main { min-width: 0; }
+.conversation-main strong { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; }
+.preview { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 3px; }
+
+.main-panel { min-width: 0; background: #f7f9fb; display: flex; }
+.empty-chat { margin: auto; width: min(520px, 90%); text-align: center; padding: 40px; }
+.empty-icon { width: 70px; height: 70px; border-radius: 22px; margin: 0 auto 18px; display: grid; place-items: center; background: #e8edf2; font-size: 28px; }
+.empty-chat h2 { margin: 0 0 10px; font-size: 23px; }
+.empty-chat p { line-height: 1.6; }
+.active-chat { width: 100%; display: flex; flex-direction: column; min-height: 100vh; }
+.chat-head { padding: 15px 20px; background: white; border-bottom: 1px solid #e1e7ee; display: flex; justify-content: space-between; align-items: center; }
+.chat-head h2 { margin: 0; font-size: 16px; }
+.message-list { flex: 1; overflow: auto; padding: 26px 20px 24px; display: flex; flex-direction: column; gap: 12px; }
+.message-row { display: flex; }
+.message-row.mine { justify-content: flex-end; }
+.bubble {
+  max-width: min(720px, 80%); padding: 10px 13px; border-radius: 15px; background: white;
+  border: 1px solid #e1e7ee; box-shadow: 0 3px 12px rgba(15,23,42,.04);
+}
+.mine .bubble { background: #17202a; color: white; border-color: #17202a; }
+.bubble-text { white-space: pre-wrap; word-break: break-word; line-height: 1.45; }
+.translation-note { margin-top: 7px; font-size: 11px; opacity: .7; }
+.original-toggle { margin-top: 7px; border: 0; background: transparent; padding: 0; font-size: 11px; color: inherit; opacity: .72; text-decoration: underline; }
+.original-text { margin-top: 7px; font-size: 12px; opacity: .82; white-space: pre-wrap; }
+.composer { padding: 12px 14px; background: white; border-top: 1px solid #e1e7ee; display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: end; }
+.attach-btn { height: 48px; width: 48px; border: 1px solid #d5dde6; }
+.send-btn { min-width: 85px; height: 48px; }
+.composer-status { min-height: 17px; padding: 0 16px 8px; background: white; }
+.bubble-media { display: block; max-width: 100%; max-height: 320px; border-radius: 10px; margin-bottom: 6px; }
+.mine .bubble-media { margin-bottom: 6px; }
+
+@media (max-width: 850px) {
+  .chat-app { grid-template-columns: 1fr; }
+  .sidebar { min-height: auto; max-height: 48vh; border-right: 0; border-bottom: 1px solid #e1e7ee; }
+  .conversation-list { max-height: 190px; }
+  .active-chat { min-height: 52vh; }
+}

@@ -1,0 +1,2 @@
+[functions.translate]
+verify_jwt = true
