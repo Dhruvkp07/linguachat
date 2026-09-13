@@ -191,3 +191,58 @@ create policy "chat_media_insert_member" on storage.objects
 drop policy if exists "chat_media_select_public" on storage.objects;
 create policy "chat_media_select_public" on storage.objects
   for select using (bucket_id = 'chat-media');
+
+-- ---------------------------------------------------------------------------
+-- v2 additions: reply-to, read receipts, audio, profile photos, deletion
+-- ---------------------------------------------------------------------------
+
+-- Reply-to support
+alter table messages add column if not exists reply_to_id uuid references messages (id) on delete set null;
+
+-- Read receipts
+alter table messages add column if not exists read_at timestamptz;
+
+-- Allow audio as a message type (drop + recreate constraint to include 'audio')
+alter table messages drop constraint if exists messages_type_check;
+alter table messages add constraint messages_type_check
+  check (message_type in ('text', 'image', 'video', 'audio'));
+
+-- Profile photo (separate from Google avatar_url)
+alter table profiles add column if not exists profile_photo_url text;
+
+-- Allow senders to delete their own messages
+drop policy if exists "messages_delete_sender" on messages;
+create policy "messages_delete_sender" on messages
+  for delete using (
+    sender_id = auth.uid()
+    and exists (
+      select 1 from conversation_members m
+      where m.conversation_id = messages.conversation_id and m.user_id = auth.uid()
+    )
+  );
+
+-- Allow recipients to mark messages as read (update read_at only)
+drop policy if exists "messages_update_read" on messages;
+create policy "messages_update_read" on messages
+  for update using (
+    exists (
+      select 1 from conversation_members m
+      where m.conversation_id = messages.conversation_id and m.user_id = auth.uid()
+    )
+  );
+
+-- Profile photos storage bucket
+insert into storage.buckets (id, name, public)
+values ('profile-photos', 'profile-photos', true)
+on conflict (id) do nothing;
+
+drop policy if exists "profile_photos_insert_self" on storage.objects;
+create policy "profile_photos_insert_self" on storage.objects
+  for insert with check (
+    bucket_id = 'profile-photos'
+    and auth.uid()::text = (storage.foldername(name))[1]
+  );
+
+drop policy if exists "profile_photos_select_public" on storage.objects;
+create policy "profile_photos_select_public" on storage.objects
+  for select using (bucket_id = 'profile-photos');

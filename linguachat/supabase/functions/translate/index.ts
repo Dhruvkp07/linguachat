@@ -64,6 +64,7 @@ Deno.serve(async (req) => {
     const text = String(body?.text ?? "").trim();
     const sourceCode = String(body?.sourceLanguage ?? "").toLowerCase();
     const targetCode = String(body?.targetLanguage ?? "").toLowerCase();
+    const mode = String(body?.mode ?? "translate").toLowerCase();
 
     const sourceLanguage = LANGUAGE_NAMES[sourceCode];
     const targetLanguage = LANGUAGE_NAMES[targetCode];
@@ -76,14 +77,10 @@ Deno.serve(async (req) => {
       return json({ error: "Message is too long." }, 400);
     }
 
-    if (!sourceLanguage || !targetLanguage) {
+    if (!sourceLanguage) {
       return json({
-        error: `Unsupported language. source=${sourceCode}, target=${targetCode}`,
+        error: `Unsupported source language: ${sourceCode}`,
       }, 400);
-    }
-
-    if (sourceCode === targetCode) {
-      return json({ translation: text });
     }
 
     const apiKey = Deno.env.get("GEMINI_API_KEY");
@@ -91,6 +88,71 @@ Deno.serve(async (req) => {
     if (!apiKey) {
       console.error("GEMINI_API_KEY is missing");
       return json({ error: "GEMINI_API_KEY is missing." }, 500);
+    }
+
+    // ── Correction mode ──────────────────────────────────────────────
+    if (mode === "correct") {
+      console.log(`Correcting text in ${sourceLanguage}, keyPresent=${Boolean(apiKey)}`);
+
+      const correctionPrompt =
+        `You are a writing assistant. Correct any grammar, spelling, and punctuation errors in the following ${sourceLanguage} message. ` +
+        `If the text is already correct, return it unchanged. ` +
+        `Lightly enhance clarity if needed, but preserve the original meaning, tone, and style. ` +
+        `Return ONLY the corrected text. Do not explain anything.\n\n` +
+        `MESSAGE:\n${text}`;
+
+      const geminiResponse = await fetch(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": apiKey,
+          },
+          body: JSON.stringify({
+            contents: [
+              { role: "user", parts: [{ text: correctionPrompt }] },
+            ],
+            generationConfig: {
+              temperature: 0.1,
+              maxOutputTokens: 500,
+            },
+          }),
+        }
+      );
+
+      const result = await geminiResponse.json();
+
+      if (!geminiResponse.ok) {
+        console.error("Gemini API error:", JSON.stringify(result));
+        return json(
+          { error: "Gemini API request failed.", status: geminiResponse.status, details: result?.error?.message ?? result },
+          502
+        );
+      }
+
+      const corrected = result?.candidates?.[0]?.content?.parts
+        ?.map((part: { text?: string }) => part.text ?? "")
+        .join("")
+        .trim();
+
+      if (!corrected) {
+        return json({ corrected: text, changed: false });
+      }
+
+      const changed = corrected.toLowerCase() !== text.toLowerCase();
+      return json({ corrected, changed });
+    }
+
+    // ── Translation mode (default) ──────────────────────────────────
+    if (!targetLanguage) {
+      return json({
+        error: `Unsupported target language: ${targetCode}`,
+      }, 400);
+    }
+
+    if (sourceCode === targetCode) {
+      return json({ translation: text });
     }
 
     console.log(
@@ -104,7 +166,7 @@ Deno.serve(async (req) => {
       `MESSAGE:\n${text}`;
 
     const geminiResponse = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
       {
         method: "POST",
         headers: {

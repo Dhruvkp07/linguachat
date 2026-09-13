@@ -13,6 +13,7 @@
 </head>
 <body>
   <div id="app">
+    <!-- ── Auth ────────────────────────────────────────────────────────── -->
     <section id="auth-view" class="center-view">
       <div class="auth-card">
         <div class="brand-mark">LC</div>
@@ -23,11 +24,19 @@
       </div>
     </section>
 
+    <!-- ── Setup ───────────────────────────────────────────────────────── -->
     <section id="setup-view" class="center-view hidden">
       <div class="setup-card">
         <div class="brand-mark">LC</div>
         <h1>Set up your profile</h1>
-        <p class="muted">Pick a unique username people can search for, and the language you want them to write to you in.</p>
+        <p class="muted">Pick a unique username, set your profile photo, and choose the language you want messages translated into.</p>
+
+        <label>Profile photo</label>
+        <div class="profile-photo-section">
+          <div class="profile-photo-preview" id="setup-photo-preview">?</div>
+          <button type="button" class="upload-photo-btn" id="setup-upload-photo-btn">Upload photo</button>
+          <input type="file" id="setup-photo-input" accept="image/*" class="hidden" />
+        </div>
 
         <label for="username-input">Username</label>
         <input id="username-input" type="text" maxlength="20" placeholder="e.g. dhruv_23" autocomplete="off" />
@@ -42,17 +51,23 @@
       </div>
     </section>
 
+    <!-- ── Chat ────────────────────────────────────────────────────────── -->
     <section id="chat-view" class="chat-app hidden">
       <aside class="sidebar">
         <div class="sidebar-head">
-          <div class="brand-row">
-            <div class="brand-mark small">LC</div>
-            <div>
-              <strong>LinguaChat</strong>
-              <div id="my-language-label" class="tiny muted"></div>
+          <div class="sidebar-head-left">
+            <div class="brand-row">
+              <div class="brand-mark small">LC</div>
+              <div>
+                <strong>LinguaChat</strong>
+                <div id="my-language-label" class="tiny muted"></div>
+              </div>
             </div>
           </div>
-          <button id="sign-out" class="icon-btn" title="Sign out">↪</button>
+          <div class="sidebar-head-actions">
+            <button id="settings-btn" class="icon-btn" title="Settings">⚙</button>
+            <button id="sign-out" class="icon-btn" title="Sign out">↪</button>
+          </div>
         </div>
 
         <div class="new-chat-box">
@@ -72,30 +87,116 @@
         <div id="empty-chat" class="empty-chat">
           <div class="empty-icon">文</div>
           <h2>Your multilingual inbox</h2>
-          <p class="muted">Start a conversation from the left. Messages, photos, and videos are translated into the recipient's chosen language.</p>
+          <p class="muted">Start a conversation from the left. Messages, photos, videos, and audio are translated into the recipient's chosen language.</p>
         </div>
 
         <div id="active-chat" class="active-chat hidden">
           <header class="chat-head">
-            <div>
-              <h2 id="chat-title">Conversation</h2>
-              <div id="chat-subtitle" class="tiny muted"></div>
+            <div class="chat-head-left">
+              <div class="chat-head-avatar" id="chat-head-avatar"></div>
+              <div>
+                <h2 id="chat-title">Conversation</h2>
+                <div id="chat-subtitle" class="tiny muted"></div>
+              </div>
             </div>
-            <button id="refresh-chat" class="icon-btn" title="Refresh">↻</button>
+            <div style="display:flex;gap:4px;align-items:center">
+              <button id="select-mode-btn" class="icon-btn" title="Select messages">☑</button>
+              <button id="refresh-chat" class="icon-btn" title="Refresh">↻</button>
+            </div>
           </header>
+
+          <!-- Multi-select toolbar -->
+          <div id="select-toolbar" class="select-toolbar hidden">
+            <span id="select-count">0 selected</span>
+            <div style="display:flex;gap:6px">
+              <button class="cancel-select-btn" id="cancel-select">Cancel</button>
+              <button class="delete-selected-btn" id="delete-selected">Delete</button>
+            </div>
+          </div>
 
           <div id="message-list" class="message-list"></div>
 
+          <!-- Reply preview -->
+          <div id="reply-preview-bar" class="reply-preview-bar hidden">
+            <span>↩ Replying to:</span>
+            <span class="reply-preview-text" id="reply-preview-text"></span>
+            <button class="reply-preview-close" id="reply-preview-close">✕</button>
+          </div>
+
+          <!-- Correction suggestion -->
+          <div id="correction-bar" class="correction-bar hidden">
+            <span>✨</span>
+            <span class="correction-text" id="correction-text"></span>
+            <button class="accept-correction" id="accept-correction">Accept</button>
+            <button class="dismiss-correction" id="dismiss-correction">Dismiss</button>
+          </div>
+
           <div class="composer">
-            <input type="file" id="media-input" accept="image/*,video/*" class="hidden" />
-            <button id="attach-btn" type="button" class="icon-btn attach-btn" title="Send a photo or video">📎</button>
+            <input type="file" id="media-input" accept="image/*,video/*,audio/*" multiple class="hidden" />
+
+            <div class="emoji-wrapper">
+              <button id="emoji-btn" type="button" class="icon-btn emoji-btn" title="Emoji">😀</button>
+              <div id="emoji-picker" class="emoji-picker hidden"></div>
+            </div>
+
+            <button id="attach-btn" type="button" class="icon-btn attach-btn" title="Send photos, videos, or audio">📎</button>
+
             <textarea id="message-input" rows="1" maxlength="3000" placeholder="Write a message..."></textarea>
+
             <button id="send-message" class="primary-btn send-btn">Send</button>
           </div>
           <div id="send-status" class="tiny muted composer-status"></div>
         </div>
       </main>
     </section>
+
+    <!-- ── Settings Modal ──────────────────────────────────────────────── -->
+    <div id="settings-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2>Settings</h2>
+          <button class="modal-close" id="settings-close">✕</button>
+        </div>
+        <p class="modal-subtitle">Customize your profile, language, and appearance.</p>
+
+        <label>Profile photo</label>
+        <div class="profile-photo-section">
+          <div class="profile-photo-preview" id="settings-photo-preview">?</div>
+          <button type="button" class="upload-photo-btn" id="settings-upload-photo-btn">Change photo</button>
+          <input type="file" id="settings-photo-input" accept="image/*" class="hidden" />
+        </div>
+
+        <label for="settings-name">Display name</label>
+        <input id="settings-name" type="text" maxlength="50" placeholder="Your name" />
+
+        <label for="settings-username">Username</label>
+        <input id="settings-username" type="text" maxlength="20" placeholder="your_username" />
+
+        <hr />
+
+        <label for="settings-language">Preferred language</label>
+        <select id="settings-language"></select>
+
+        <hr />
+
+        <div class="theme-toggle-row">
+          <span class="theme-toggle-label">Dark mode</span>
+          <button class="toggle-switch" id="theme-toggle" type="button"></button>
+        </div>
+
+        <hr />
+
+        <button id="settings-save" class="primary-btn full-width">Save changes</button>
+        <p id="settings-error" class="error hidden"></p>
+        <p id="settings-success" class="success-text tiny hidden"></p>
+      </div>
+    </div>
+
+    <!-- ── Context menu (positioned by JS) ─────────────────────────────── -->
+    <div id="context-menu" class="context-menu hidden">
+      <button id="ctx-reply">↩ Reply</button>
+      <button id="ctx-delete" class="danger">🗑 Delete</button>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
