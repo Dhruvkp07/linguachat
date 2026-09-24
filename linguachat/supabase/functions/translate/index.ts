@@ -90,7 +90,7 @@ Deno.serve(async (req) => {
       return json({ error: "GEMINI_API_KEY is missing." }, 500);
     }
 
-    // ── Correction mode ──────────────────────────────────────────────
+
     if (mode === "correct") {
       console.log(`Correcting text in ${sourceLanguage}, keyPresent=${Boolean(apiKey)}`);
 
@@ -144,7 +144,7 @@ Deno.serve(async (req) => {
       return json({ corrected, changed });
     }
 
-    // ── Translation mode (default) ──────────────────────────────────
+
     if (!targetLanguage) {
       return json({
         error: `Unsupported target language: ${targetCode}`,
