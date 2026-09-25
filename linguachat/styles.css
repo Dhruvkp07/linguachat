@@ -1,6 +1,5 @@
-/* ── LinguaChat Theme System ─────────────────────────────────────────────── */
+
 :root {
-  /* Light theme (default) */
   --bg-primary: #eef2f6;
   --bg-card: #ffffff;
   --bg-sidebar: #ffffff;
@@ -55,7 +54,6 @@
   font-synthesis: none;
 }
 
-/* ── Dark Theme ──────────────────────────────────────────────────────────── */
 [data-theme="dark"] {
   --bg-primary: #0f1419;
   --bg-card: #1a2332;
@@ -106,7 +104,7 @@
   --focus-ring: rgba(29, 155, 240, .2);
 }
 
-/* ── Base Reset ──────────────────────────────────────────────────────────── */
+
 * { box-sizing: border-box; }
 body { margin: 0; min-height: 100vh; background: var(--bg-primary); color: var(--text-primary); transition: background-color .3s, color .3s; }
 button, input, select, textarea { font: inherit; color: inherit; }
@@ -118,7 +116,6 @@ button { cursor: pointer; }
 .error-text { color: var(--text-error); }
 .success-text { color: var(--text-success); }
 
-/* ── Auth & Setup cards ──────────────────────────────────────────────────── */
 .center-view { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
 .auth-card, .setup-card {
   width: min(430px, 100%);
@@ -139,7 +136,6 @@ button { cursor: pointer; }
 .brand-mark.small { width: 38px; height: 38px; border-radius: 11px; font-size: 13px; }
 .full-width { width: 100%; margin-top: 22px; }
 
-/* ── Buttons ─────────────────────────────────────────────────────────────── */
 .primary-btn {
   border: 0; border-radius: 12px; padding: 13px 16px;
   background: var(--accent); color: var(--text-brand); font-weight: 600;
@@ -153,7 +149,6 @@ button { cursor: pointer; }
 .icon-btn { width: 38px; height: 38px; border-radius: 10px; transition: background-color .2s; }
 .icon-btn:hover { background: var(--bg-icon-hover); }
 
-/* ── Form elements ───────────────────────────────────────────────────────── */
 label { display: block; font-size: 13px; font-weight: 600; margin: 20px 0 8px; }
 select, input, textarea {
   width: 100%; border: 1px solid var(--border-input); background: var(--bg-input); color: var(--text-primary);
@@ -163,7 +158,6 @@ select, input { padding: 12px 13px; }
 textarea { resize: none; min-height: 48px; max-height: 140px; padding: 13px 14px; line-height: 1.4; }
 select:focus, input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--focus-ring); }
 
-/* ── Chat layout ─────────────────────────────────────────────────────────── */
 .chat-app { min-height: 100vh; display: grid; grid-template-columns: 330px 1fr; }
 .sidebar {
   background: var(--bg-sidebar); border-right: 1px solid var(--border-chat);
@@ -197,7 +191,6 @@ select:focus, input:focus, textarea:focus { border-color: var(--accent); box-sha
 .conversation-main strong { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; }
 .preview { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 3px; }
 
-/* ── Main panel ──────────────────────────────────────────────────────────── */
 .main-panel { min-width: 0; background: var(--bg-main); display: flex; transition: background-color .3s; }
 .empty-chat { margin: auto; width: min(520px, 90%); text-align: center; padding: 40px; }
 .empty-icon {
@@ -216,7 +209,7 @@ select:focus, input:focus, textarea:focus { border-color: var(--accent); box-sha
 .chat-head-avatar { width: 36px; height: 36px; flex: 0 0 36px; border-radius: 50%; display: grid; place-items: center; background: var(--bg-avatar); color: var(--text-avatar); font-weight: 700; font-size: 13px; overflow: hidden; }
 .chat-head-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
-/* ── Messages ────────────────────────────────────────────────────────────── */
+ ────────────────────────────────────────────────────────────── */
 .message-list { flex: 1; overflow: auto; padding: 26px 20px 24px; display: flex; flex-direction: column; gap: 12px; }
 .message-row { display: flex; align-items: flex-end; animation: fadeInMsg .25s ease-out; }
 .message-row.mine { justify-content: flex-end; }
